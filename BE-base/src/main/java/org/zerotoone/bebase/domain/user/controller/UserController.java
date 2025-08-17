@@ -42,6 +42,14 @@ public class UserController {
 		return ResponseEntity.ok(ApiResponse.success(loginResponse));
 	}
 
+	@PostMapping("/logout")
+	public ResponseEntity<ApiResponse<Void>> logout(
+		HttpServletRequest request
+	) {
+		userService.logout(request.getHeader(HttpHeaders.AUTHORIZATION));
+		return ResponseEntity.ok(ApiResponse.success());
+	}
+
 	@PostMapping("/reissue")
 	public ResponseEntity<ApiResponse<UserLoginResponse>> reissue(
 		@RequestBody @Valid RefreshTokenRequest refreshTokenRequest
@@ -50,8 +58,4 @@ public class UserController {
 		return ResponseEntity.ok(ApiResponse.success(newTokens));
 	}
 
-	@GetMapping("/test")
-	public ResponseEntity<ApiResponse<Void>> test() {
-		return ResponseEntity.ok(ApiResponse.success());
-	}
 }

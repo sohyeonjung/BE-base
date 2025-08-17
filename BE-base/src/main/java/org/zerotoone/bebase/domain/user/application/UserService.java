@@ -1,9 +1,11 @@
 package org.zerotoone.bebase.domain.user.application;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.zerotoone.bebase.domain.user.domain.User;
@@ -77,5 +79,32 @@ public class UserService {
 	public UserLoginResponse reissue(String refreshToken) {
 		JwtToken newToken = jwtTokenProvider.refreshToken(refreshToken);
 		return UserLoginResponse.of(newToken);
+	}
+
+	@Transactional
+	public void logout(String token) {
+		if (token == null && !token.startsWith("Bearer ")) {
+			throw new CustomException(ErrorCode.INVALID_TOKEN);
+		}
+
+		String accessToken = token.substring(7);
+
+		jwtTokenProvider.validateToken(accessToken);
+
+		Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+		String name = authentication.getName();
+
+		if (redisUtil.existData(name)) {
+			redisUtil.deleteData(name);
+		} else {
+			log.warn("logout: not exist refeshtoken");
+		}
+
+		Long remainingExpirationMillis = jwtTokenProvider.getExpiration(accessToken);
+		if (remainingExpirationMillis > 0) {
+			redisUtil.setDataExpire(accessToken, "logout", remainingExpirationMillis / 1000);
+		}
+
+		SecurityContextHolder.clearContext();
 	}
 }
