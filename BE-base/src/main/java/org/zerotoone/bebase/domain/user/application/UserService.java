@@ -73,4 +73,9 @@ public class UserService {
 		}
 	}
 
+	@Transactional
+	public UserLoginResponse reissue(String refreshToken) {
+		JwtToken newToken = jwtTokenProvider.refreshToken(refreshToken);
+		return UserLoginResponse.of(newToken);
+	}
 }

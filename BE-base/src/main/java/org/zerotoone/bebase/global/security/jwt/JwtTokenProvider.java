@@ -87,7 +87,7 @@ public class JwtTokenProvider {
 		Claims claims = parseClaims(token);
 
 		if(claims.get("auth") == null){
-			throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+			throw new CustomException(ErrorCode.INVALID_TOKEN);
 		}
 
 		Collection<? extends GrantedAuthority> authorities = Arrays.stream(claims.get("auth").toString().split(","))
