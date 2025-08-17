@@ -8,7 +8,7 @@ import org.zerotoone.bebase.domain.user.domain.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-	Optional<Object> findByEmail(String email);
+	Optional<User> findByEmail(String email);
 
-	Optional<Object> findByName(String name);
+	Optional<User> findByName(String name);
 }
