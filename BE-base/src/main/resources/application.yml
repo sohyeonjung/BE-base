@@ -38,3 +38,9 @@ spring:
     activate:
       on-profile: local
     import: optional:application-local.yml
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+    import: application-prod.yml
