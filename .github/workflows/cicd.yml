@@ -112,7 +112,6 @@ jobs:
             # 기존 app 컨테이너 ID 조회, 중지
             OLD_CONTAINER_ID=$(sudo docker ps -aq --filter name=app)
             sudo docker stop $OLD_CONTAINER_ID 2>/dev/null || true
-            #sudo docker rm $OLD_CONTAINER_ID 2>/dev/null || true
             
             # 기존 new-app 컨테이너 ID 조회 및 삭제
             NEW_CONTAINER_ID=$(sudo docker ps -aq --filter name=new-app)
